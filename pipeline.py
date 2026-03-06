@@ -10,16 +10,23 @@ class CovidPipeline:
 
 
     def load_data(self):
-        self.df = pd.read_csv(self.file, index_col=0)
-        print("Data Loaded Successfully")
-        print(self.df.head())
+        try:
+            self.df = pd.read_csv(self.file, index_col=0)
+            print("Data Loaded Successfully")
+            print(self.df.head())
+        except FileNotFoundError:
+            print(f"Error: File '{self.file}' not found. Please check the file path.")
+        except pd.errors.EmptyDataError:
+            print("Error: The file is empty.")
+        except Exception as e:
+            print(f"An unexpected error occurred while loading data: {e}")
 
 
     
     def clean_data(self):
 
         
-        if "time" in self.df.columns:
+        if "time_hms" in self.df.columns:
             self.df = self.df.drop(columns=["time_hms"])
 
         
@@ -62,4 +69,5 @@ if __name__ == "__main__":
 
     pipeline.analyze_data()
     
+
     pipeline.visualize_data()
